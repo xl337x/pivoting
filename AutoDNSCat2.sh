@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #═══════════════════════════════════════════════════════════════════════════════
-#  DNSCAT2 AUTOMATED SETUP & DEPLOYMENT SCRIPT
-#  For Penetration Testing Engagements
+#  DNSCAT2 By @mahdiesta
+#  
 #═══════════════════════════════════════════════════════════════════════════════
 
 set -e
@@ -29,7 +29,7 @@ print_banner() {
     ║    | |_| | |\  |___) | |___ / ___ \| |  / __/                 ║
     ║    |____/|_| \_|____/ \____/_/   \_\_| |_____|                ║
     ║                                                               ║
-    ║           AUTOMATED SETUP & DEPLOYMENT SCRIPT                 ║
+    ║              SCRIPT By @Mahdiesta                             ║
     ╚═══════════════════════════════════════════════════════════════╝
 EOF
     echo -e "${NC}"
